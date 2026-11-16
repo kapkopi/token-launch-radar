@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launch Radar — pre-token protocols ranked by implied value</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="pulse" aria-hidden="true"></span> LAUNCH&nbsp;RADAR</div>
+  <p class="tagline">Which pre-token protocol is worth farming next, and what to do about it.</p>
+  <p class="meta" id="meta"></p>
+</header>
+
+<main>
+  <section class="panel" id="controls">
+    <div class="row">
+      <label>Search <input id="q" type="search" placeholder="protocol name or slug" autocomplete="off"></label>
+      <label>Category <select id="cat"><option value="">All categories</option></select></label>
+      <label>Chain <select id="chain"><option value="">All chains</option></select></label>
+      <label>Min TVL <select id="mintvl">
+        <option value="0">Any</option><option value="10000000">$10M+</option>
+        <option value="50000000">$50M+</option><option value="100000000">$100M+</option>
+        <option value="500000000">$500M+</option><option value="1000000000">$1B+</option>
+      </select></label>
+      <label class="check"><input id="watch" type="checkbox"> Watchlist only</label>
+    </div>
+    <div class="row sandbox">
+      <span class="sandbox-title">Model sandbox</span>
+      <label>Growth weight <input id="sb-growth" type="range" min="0" max="1" step="0.05"><b id="sb-growth-v"></b></label>
+      <label>Maturity span <input id="sb-mat" type="range" min="180" max="1460" step="10"><b id="sb-mat-v"></b></label>
+      <label>Multiple cap <input id="sb-cap" type="range" min="0.1" max="3" step="0.05"><b id="sb-cap-v"></b></label>
+      <button id="sb-reset" type="button">Reset model</button>
+      <span class="sandbox-note">Sliders re-rank the board live from the snapshot's own figures.</span>
+    </div>
+  </section>
+
+  <section class="panel" id="detail" aria-live="polite">
+    <p class="hint">Select a row to see its model breakdown and farm plan.</p>
+  </section>
+
+  <section class="panel">
+    <div class="board-head"><h2>The board</h2><span id="count"></span></div>
+    <table id="board">
+      <thead><tr>
+        <th data-k="rank">Rank</th><th data-k="name">Protocol</th><th data-k="category">Category</th>
+        <th data-k="chains">Chains</th><th data-k="tvl_usd">TVL</th><th data-k="change_7d">7d</th>
+        <th data-k="age_days">Age</th><th data-k="implied_value_usd">Implied value</th>
+        <th data-k="multiple">Multiple</th><th data-k="farm">Farm cost</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+
+  <section class="panel" id="how">
+    <h2>How the model works</h2>
+    <p>Implied value = TVL &times; category multiple &times; growth &times; maturity &times; breadth. The multiple is the
+    median market-cap-to-TVL ratio of the live-token protocols in the same category, taken from this snapshot, and
+    only when at least three live protocols back it; a category with fewer uses the global median, so one outlier
+    never prices a whole category. Growth is the seven-day TVL change, clamped. Maturity
+    rises with the days a protocol has run with no token recorded. Breadth adds a little for each extra chain.
+    No protocol name is ever special-cased.</p>
+    <table id="multiples">
+      <thead><tr><th>Category</th><th>Multiple</th><th>Live comparables</th></tr></thead>
+      <tbody id="multrows"></tbody>
+    </table>
+    <p class="fine">The board ranks every protocol the watchlist's own exclusion logic leaves standing: pre-token, not
+    an exchange, not a versioned pool, not a wrapped, staked or bridged product. Protocols set aside are listed below
+    with the reason.</p>
+  </section>
+
+  <section class="panel" id="live">
+    <h2>Live-token comparables</h2>
+    <p>Protocols whose token already trades, by market cap. Their multiples are the model's evidence, never its rows.</p>
+    <table id="livetable">
+      <thead><tr><th>Protocol</th><th>Category</th><th>TVL</th><th>Market cap</th><th>Multiple</th></tr></thead>
+      <tbody id="liverows"></tbody>
+    </table>
+  </section>
+
+  <section class="panel" id="excluded">
+    <h2>Set aside</h2>
+    <p>Pre-token protocols the board leaves out, with the reason. They record no token, but they are not launches of
+    their own.</p>
+    <table id="exctable">
+      <thead><tr><th>Protocol</th><th>Category</th><th>TVL</th><th>Reason</th></tr></thead>
+      <tbody id="excrows"></tbody>
+    </table>
+  </section>
+</main>
+
+<footer>
+  <p id="source"></p>
+  <p>Implied values are this entry's own claim, never make.fun's. A protocol is said to record no token, never to have
+  none: a DefiLlama record is not proof. Farm plans are a starting point, not financial advice; verify every link on
+  the protocol's own page and never pay to claim.</p>
+</footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
